@@ -20,7 +20,7 @@ class Container {
     };
 
     getById(givenId){
-        const productById = this.productSave.find(element => element.id === givenId)
+        const productById = this.productSave.find(product => product.id === givenId)
         console.log(productById)
     };
 
@@ -29,16 +29,21 @@ class Container {
     };
 
     deleteById(givenId){
-        const productDelete = this.productSave.splice(this.productSave.findIndex(function(product){return product.id === givenId}),1);
+        this.productSave = this.productSave.filter(product => {
+            return product.id != givenId});
+        
+        const productsText = JSON.stringify(this.productSave);
 
-        const productDeleteText = JSON.stringify(productDelete);
-
-        fs.promises.writeFile(`./${this.archiveName}`, productDeleteText)
+        fs.promises.writeFile(`./${this.archiveName}`, productsText)
 
     };
 
     deleteAll(){
+        this.productSave = [];
+        
+        const productsText = JSON.stringify(this.productSave);
 
+        fs.promises.writeFile(`./${this.archiveName}`, productsText)
     };
 }
 const container1 = new Container ('first-archive-products.txt');
@@ -49,10 +54,16 @@ container1.save(3,'fideos',80);
 
 container1.save(4,'gaseosa',110);
 
-container1.getById(2);
-
-container1.getById(3);
-
 container1.getAll();
 
 container1.deleteById(2);
+
+container1.getAll();
+
+container1.deleteById(3);
+
+container1.getAll();
+
+container1.deleteAll();
+
+container1.getAll();
