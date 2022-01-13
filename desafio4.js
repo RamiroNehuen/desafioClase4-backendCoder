@@ -6,13 +6,18 @@ class Container {
         this.productSave =[]
     };
 
-    save(id, title, price){
+   generateNewId(){
+        let idIndex = Math.floor(Math.random() * 9999) +1;
+        if (Object.keys(this.productSave).includes(idIndex) == idIndex) {
+            idIndex = generateNewId();
+        };
+        return idIndex;
+    }
+    
+    save(item){
         
-        this.productSave.push({
-            id: id,
-            title: title,
-            price: price,
-        })
+        this.productSave.push(item);
+        item.id = this.generateNewId();
         
         const productsText = JSON.stringify(this.productSave);
 
@@ -48,22 +53,22 @@ class Container {
 }
 const container1 = new Container ('first-archive-products.txt');
 
-container1.save(2,'azucar',150);
+container1.save({item:'azucar',price:150});
 
-container1.save(3,'fideos',80);
+container1.save({item:'fideos',price:80});
 
-container1.save(4,'gaseosa',110);
+container1.save({item:'gaseosa',price:110});
 
-container1.getAll();
+// container1.getAll();
 
-container1.deleteById(2);
+// container1.deleteById(2);
 
-container1.getAll();
+// container1.getAll();
 
-container1.deleteById(3);
+// container1.deleteById(3);
 
-container1.getAll();
+// container1.getAll();
 
-container1.deleteAll();
+// container1.deleteAll();
 
-container1.getAll();
+// container1.getAll();
