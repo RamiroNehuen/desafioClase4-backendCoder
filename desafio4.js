@@ -1,8 +1,8 @@
 const fs = require('fs');
 
 class Container {
-    constructor (archiveNeame){
-        this.archiveName = archiveNeame;
+    constructor (fileName){
+        this.fileName = fileName;
         this.productSave =[]
     };
 
@@ -13,23 +13,34 @@ class Container {
         };
         return idIndex;
     }
+
+    createFile(){
+        const productsText = JSON.stringify(this.productSave)
+        try { fs.promises.writeFile(`./${this.fileName}`, productsText)
+            }
+        catch (err) {
+            console.log('No se pudo crear el archivo!')
+        }
+    };
     
     save(item){
-        
-        this.productSave.push(item);
-        item.id = this.generateNewId();
-        
-        const productsText = JSON.stringify(this.productSave);
-
-        try { fs.promises.writeFile(`./${this.archiveName}`, productsText)
-        }
-        catch (err) {
-            console.log('No se pudo escribir el archivo!')
-        }
+        fs.promises.readFile(`./${this.fileName}`, 'utf-8')
+        .then(content => {
+            this.productSave = JSON.parse(content);
+            this.productSave.push(item);
+            item.id = this.generateNewId();
+            const productsText = JSON.stringify(this.productSave);
+            try { fs.promises.writeFile(`./${this.fileName}`, productsText)
+            }
+            catch (err) {
+                console.log('No se pudo escribir el archivo!')
+            }
+        })
+        .catch(err => {console.log('Error de Lectura', err)})
     };
 
     getById(givenId){
-        fs.promises.readFile(`./${this.archiveName}`, 'utf-8')
+        fs.promises.readFile(`./${this.fileName}`, 'utf-8')
         .then(content => {
             this.productSave = JSON.parse(content);
             const productById = this.productSave.find(product => product.id === givenId)
@@ -41,10 +52,9 @@ class Container {
     };
 
     getAll(){
-        fs.promises.readFile(`./${this.archiveName}`, 'utf-8')
+        fs.promises.readFile(`./${this.fileName}`, 'utf-8')
         .then(content => {
             this.productSave = JSON.parse(content);
-            this.productSave = this.productSave.filter(product => product.id != givenId);
             console.log(this.productSave);
         })
         .catch(err => {console.log('Error de Lectura', err)})
@@ -52,7 +62,7 @@ class Container {
 
     deleteById(givenId){
         
-        fs.promises.readFile(`./${this.archiveName}`, 'utf-8')
+        fs.promises.readFile(`./${this.fileName}`, 'utf-8')
         .then(content => {
             this.productSave = JSON.parse(content);
             this.productSave = this.productSave.filter(product => product.id != givenId);
@@ -60,7 +70,7 @@ class Container {
             
             const productsText = JSON.stringify(this.productSave);
 
-            try { fs.promises.writeFile(`./${this.archiveName}`, productsText)
+            try { fs.promises.writeFile(`./${this.fileName}`, productsText)
             }
             catch (err) {
                 console.log('No se pudo escribir el archivo!')
@@ -71,7 +81,7 @@ class Container {
     };
 
     deleteAll(){
-        fs.promises.readFile(`./${this.archiveName}`, 'utf-8')
+        fs.promises.readFile(`./${this.fileName}`, 'utf-8')
         .then(content => {
             this.productSave = JSON.parse(content);
             this.productSave = [];
@@ -79,7 +89,7 @@ class Container {
             
             const productsText = JSON.stringify(this.productSave);
 
-            try { fs.promises.writeFile(`./${this.archiveName}`, productsText)
+            try { fs.promises.writeFile(`./${this.fileName}`, productsText)
             }
             catch (err) {
                 console.log('No se pudo escribir el archivo!')
@@ -88,17 +98,19 @@ class Container {
         .catch(err => {console.log('Error de Lectura', err)})
     };
 }
-const container1 = new Container ('first-archive-products.txt');
+const container1 = new Container ('first-file-products.txt');
+
+ // container1.createFile();
 
 // container1.save({item:'azucar',price:150});
 
 // container1.save({item:'fideos',price:80});
 
-container1.save({item:'gaseosa',price:110});
+ container1.save({item:'gaseosa',price:110});
 
 // container1.getAll();
 
-// container1.deleteById(2349);
+// container1.deleteById(4453);
 
 // container1.getAll();
 
